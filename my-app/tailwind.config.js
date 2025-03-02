@@ -5,7 +5,13 @@ module.exports = {
       "./app/**/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
-      extend: {},
+      extend: {
+        colors:{
+          darkBg: "#171616",
+          lightBg: "#1f1f1f",
+        }
+      },
     },
-    plugins: [],
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    plugins: [require("tailwind-scrollbar-hide")],
 };

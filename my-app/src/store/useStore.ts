@@ -21,6 +21,16 @@ type ProductState = {
   fetchProducts: () => Promise<void>;
   fetchCategories: () => Promise<void>;
 };
+ type StoreState = {
+   cart: CartItem[];
+   addToCart: (product: CartItem) => void;
+ };
+
+ export const useStore = create<StoreState>((set) => ({
+   cart: [],
+   addToCart: (product) =>
+     set((state) => ({ cart: [...state.cart, product] })),
+ }));
 
 export const useProductStore = create<ProductState>((set) => ({
   products: [],

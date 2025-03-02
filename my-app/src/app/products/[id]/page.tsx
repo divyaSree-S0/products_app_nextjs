@@ -1,39 +1,119 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { useProductStore } from "@/store/useStore";
+import { useParams, useRouter } from "next/navigation";
+import { useStore, useProductStore } from "@/store/useStore";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductDetail() {
-  const { id } = useParams();
-  const { products, fetchProducts } = useProductStore();
+  const params = useParams();
+  const router = useRouter();
+  const { products } = useProductStore();
+  const { cart, addToCart, updateQuantity, removeFromCart } = useStore();
   const [product, setProduct] = useState(null);
 
+  // Find the product
   useEffect(() => {
-    if (products.length === 0) {
-      fetchProducts();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (products.length > 0) {
-      const foundProduct = products.find((p) => p.id.toString() === id);
+    if (params?.id) {
+      const foundProduct = products.find((p) => p.id === Number(params.id));
       setProduct(foundProduct);
     }
-  }, [products, id]);
+  }, [params?.id, products]);
 
-  if (!product) return <div className="text-white p-4">Loading...</div>;
+  if (!product) return <p className="text-white">Loading...</p>;
+
+  // Get product quantity in cart
+  const cartItem = cart.find((item) => item.id === product.id);
+  const quantity = cartItem ? cartItem.quantity : 0;
+
+  // Handle Add to Cart
+  const handleAddToCart = () => {
+    if (!cartItem) {
+      addToCart({
+        id: product.id,
+        name: product.title,
+        price: product.price,
+        quantity: 1,
+        image: product.thumbnail,
+      });
+      toast.success("Added to cart!", {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+    }
+  };
+
+  // Handle Quantity Change
+  const handleIncrease = () => updateQuantity(product.id, quantity + 1);
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      updateQuantity(product.id, quantity - 1);
+    } else {
+      removeFromCart(product.id);
+    }
+  };
 
   return (
-    <div className="p-4 bg-black text-white min-h-screen">
-      <h1 className="text-2xl font-bold">{product.title}</h1>
-      <img src={product.thumbnail} alt={product.title} className="w-full max-h-96 object-cover mt-4 rounded-lg" />
-      <p className="text-yellow-400 mt-2">⭐ {product.rating}</p>
-      <p className="text-lg font-semibold mt-2">${product.price}</p>
-      <p className="mt-4">{product.description}</p>
+    <div className="bg-[#1f1f1f] relative min-h-screen text-white">
+      {/* Back Button */}
+      <div className="p-4">
+        <button
+          onClick={() => router.back()}
+          className="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold"
+        >
+          ← Back
+        </button>
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="max-w-2xl mx-auto p-6 pb-20"> {/* Added bottom padding */}
+        <img
+          src={product.thumbnail}
+          alt={product.title}
+          className="w-full min-h-max object-cover rounded-lg"
+        />
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold truncate">{product.title}</h2>
+          <p className="text-yellow-400 text-sm">⭐ {product.rating}</p>
+        </div>
+
+        <p className="mt-4 text-gray-300">{product.description}</p>
+        <p className="text-lg font-semibold mt-2">${product.price}</p>
+      </div>
+
+      {/* Fixed Bottom "Add to Cart" Section */}
+      <div className="fixed bottom-0 left-0 w-full bg-lightBg p-4 shadow-lg flex justify-center">
+        {quantity > 0 ? (
+          // Show Quantity Buttons if already in cart
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={handleDecrease}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg text-lg font-bold"
+            >
+              -
+            </button>
+            <span className="text-white text-lg font-bold">{quantity}</span>
+            <button
+              onClick={handleIncrease}
+              className="bg-green-500 text-white px-4 py-2 rounded-lg text-lg font-bold"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          // Show "Add to Cart" if not in cart
+          <button
+            onClick={handleAddToCart}
+            className="w-full bg-yellow-500 text-black px-6 py-3 rounded-lg font-bold text-lg"
+          >
+            Add to Cart
+          </button>
+        )}
+      </div>
     </div>
   );
 }
+
 
 
 // "use client"; // Ensures client-side rendering
