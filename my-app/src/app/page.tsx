@@ -63,18 +63,27 @@ export default function Products() {
       <div className="grid grid-cols-2 gap-4 mt-4">
         {filteredProducts.map((product) => (
           <Link key={product.id} href={`/products/${product.id}`}>
-            <div className="bg-gray-800 p-4 rounded-xl lex flex-col items-center min-h-[300px]">
-            <div className="w-full h-[150px] flex justify-center items-center">
-              <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover rounded-lg" />
-            </div>
-              {/* <img src={product.thumbnail} alt={product.title} className="w-full rounded-lg" /> */}
-              <h2 className="text-lg mt-2">{product.title}</h2>
-              <p className="text-yellow-400">⭐ {product.rating}</p>
-              <p className="text-white font-bold">${product.price}</p>
+            <div className="bg-gray-800 p-4 rounded-xl flex flex-col justify-between min-h-[200px]">
+              {/* Image Section */}
+              <div className="w-full h-[150px] flex justify-center items-center">
+                <img
+                  src={product.thumbnail}
+                  alt={product.name}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+
+              {/* Product Details */}
+              <div className="mt-2 flex flex-col flex-grow">
+                <h2 className="text-lg font-bold line-clamp-2">{product.title}</h2>
+                <p className="text-yellow-400">⭐ {product.rating}</p>
+                <p className="text-white font-bold mt-auto">${product.price}</p>
+              </div>
             </div>
           </Link>
         ))}
       </div>
+
     </div>
   );
 }
