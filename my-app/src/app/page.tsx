@@ -1,66 +1,53 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useProductStore } from "@/store/useStore";
 
 export default function Products() {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const { products, categories, fetchProducts, fetchCategories } = useProductStore();
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Fetch Products
   useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data.products))
-      .catch((err) => console.error("Error fetching products:", err));
-  }, []);
-
-  // Fetch Categories
-  useEffect(() => {
-    fetch("https://dummyjson.com/products/categories")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Categories:", data); // Debugging
-        setCategories(data);
-      })
-      .catch((err) => console.error("Error fetching categories:", err));
+    fetchProducts();
+    fetchCategories();
   }, []);
 
   // Filter products by category
   const filteredProducts =
     selectedCategory === "all"
       ? products
-      : products.filter((product) => product.category === selectedCategory);
+      : products.filter((product) => product.category.toLowerCase() === selectedCategory);
 
   return (
     <div className="p-4 bg-black text-white min-h-screen">
       <h1 className="text-xl font-bold">Product List</h1>
 
       {/* Categories Filter */}
-      <div className="flex gap-3 overflow-x-auto mt-4">
+      <div className="flex gap-5 overflow-x-auto mt-4 h-10">
         <button
           onClick={() => setSelectedCategory("all")}
           className={`px-4 py-2 rounded-lg ${
-            selectedCategory === "all" ? "bg-yellow-500" : "bg-gray-700"
+            selectedCategory === "all" ? "bg-yellow-500" : "bg-gray-900"
           }`}
         >
           All
         </button>
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <button
-            key={category.slug} // Ensure unique key using slug
+            key={category.slug} // Use slug for key
             onClick={() => setSelectedCategory(category.slug)}
-            className={`px-4 py-2 rounded-lg ${selectedCategory === category.slug ? "bg-yellow-500" : "bg-gray-700"
-              }`}
+            className={`px-4 py-2 rounded-lg min-w-max whitespace-nowrap ${
+              selectedCategory === category.slug ? "bg-yellow-500" : "bg-gray-700"
+            }`}
           >
-            {category.name} 
+            {category.name}
           </button>
         ))}
-
       </div>
 
       {/* Products List */}
-      <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-2 gap-6 m-3 mt-6">
         {filteredProducts.map((product) => (
           <Link key={product.id} href={`/products/${product.id}`}>
             <div className="bg-gray-800 p-4 rounded-xl flex flex-col justify-between min-h-[200px]">
@@ -68,14 +55,14 @@ export default function Products() {
               <div className="w-full h-[150px] flex justify-center items-center">
                 <img
                   src={product.thumbnail}
-                  alt={product.name}
+                  alt={product.title}
                   className="w-full h-full object-cover rounded-lg"
                 />
               </div>
 
               {/* Product Details */}
               <div className="mt-2 flex flex-col flex-grow">
-                <h2 className="text-lg font-bold line-clamp-2">{product.title}</h2>
+                <h2 className="text-lg font-bold truncate">{product.title}</h2>
                 <p className="text-yellow-400">⭐ {product.rating}</p>
                 <p className="text-white font-bold mt-auto">${product.price}</p>
               </div>
@@ -83,10 +70,102 @@ export default function Products() {
           </Link>
         ))}
       </div>
-
     </div>
   );
 }
+
+
+
+// "use client";
+// import { useState, useEffect } from "react";
+// import Link from "next/link";
+
+// export default function Products() {
+//   const [products, setProducts] = useState([]);
+//   const [categories, setCategories] = useState([]);
+//   const [selectedCategory, setSelectedCategory] = useState("all");
+
+//   // Fetch Products
+//   useEffect(() => {
+//     fetch("https://dummyjson.com/products")
+//       .then((res) => res.json())
+//       .then((data) => setProducts(data.products))
+//       .catch((err) => console.error("Error fetching products:", err));
+//   }, []);
+
+//   // Fetch Categories
+//   useEffect(() => {
+//     fetch("https://dummyjson.com/products/categories")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         console.log("Categories:", data); // Debugging
+//         setCategories(data);
+//       })
+//       .catch((err) => console.error("Error fetching categories:", err));
+//   }, []);
+
+//   // Filter products by category
+//   const filteredProducts =
+//     selectedCategory === "all"
+//       ? products
+//       : products.filter((product) => product.category === selectedCategory);
+
+//   return (
+//     <div className="p-4 bg-black text-white min-h-screen">
+//       <h1 className="text-xl font-bold">Product List</h1>
+
+
+//       {/* Categories Filter */}
+//       <div className="flex gap-5 overflow-x-auto mt-4 h-10">
+//         <button
+//           onClick={() => setSelectedCategory("all")}
+//           className={`px-4 py-2 rounded-lg ${
+//             selectedCategory === "all" ? "bg-yellow-500" : "bg-gray-900"
+//           }`}
+//         >
+//           All
+//         </button>
+//         {categories.map((category, index) => (
+//           <button
+//             key={category.slug} // Ensure unique key using slug
+//             onClick={() => setSelectedCategory(category.slug)}
+//             className={`px-4 py-2 rounded-lg ${selectedCategory === category.slug ? "bg-yellow-500" : "bg-gray-700"
+//               }`}
+//           >
+//             {category.name} 
+//           </button>
+//         ))}
+//       </div>
+
+
+//       {/* Products List */}
+//       <div className="grid grid-cols-2 gap-6 m-3 mt-6">
+//         {filteredProducts.map((product) => (
+//           <Link key={product.id} href={`/products/${product.id}`}>
+//             <div className="bg-gray-800 p-4 rounded-xl flex flex-col justify-between min-h-[200px]">
+//               {/* Image Section */}
+//               <div className="w-full h-[150px] flex justify-center items-center">
+//                 <img
+//                   src={product.thumbnail}
+//                   alt={product.name}
+//                   className="w-full h-full object-cover rounded-lg"
+//                 />
+//               </div>
+
+//               {/* Product Details */}
+//               <div className="mt-2 flex flex-col flex-grow">
+//                 <h2 className="text-lg font-bold truncate">{product.title}</h2>
+//                 <p className="text-yellow-400">⭐ {product.rating}</p>
+//                 <p className="text-white font-bold mt-auto">${product.price}</p>
+//               </div>
+//             </div>
+//           </Link>
+//         ))}
+//       </div>
+
+//     </div>
+//   );
+// }
 
 
 // "use client";
