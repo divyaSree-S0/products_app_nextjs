@@ -4,6 +4,7 @@ import { useStore, useProductStore } from "@/store/useStore";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ChevronLeft } from "lucide-react";
 
 export default function ProductDetail() {
   const params = useParams();
@@ -59,9 +60,9 @@ export default function ProductDetail() {
       <div className="p-4">
         <button
           onClick={() => router.back()}
-          className="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold"
+          className="text-white px-4 py-2 rounded-lg font-bold"
         >
-          ← Back
+          <ChevronLeft className="w-5 h-5" />
         </button>
       </div>
 
@@ -72,13 +73,13 @@ export default function ProductDetail() {
           alt={product.title}
           className="w-full min-h-max object-cover rounded-lg"
         />
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold truncate">{product.title}</h2>
-          <p className="text-yellow-400 text-sm">⭐ {product.rating}</p>
+        <div className="flex ">
+          <h2 className="text-3xl font-bold flex">{product.title}</h2>
+          <p className="text-yellow-400 text-2xl justify-end">⭐{product.rating}</p>
         </div>
 
-        <p className="mt-4 text-gray-300">{product.description}</p>
-        <p className="text-lg font-semibold mt-2">${product.price}</p>
+        <p className="mt-4 text-xl text-gray-300">{product.description}</p>
+        <p className="text-2xl font-semibold mt-2">${product.price}</p>
       </div>
 
       {/* Fixed Bottom "Add to Cart" Section */}

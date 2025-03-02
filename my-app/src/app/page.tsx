@@ -21,10 +21,10 @@ export default function Products() {
 
   return (
     <div className="p-4 bg-darkBg text-white min-h-screen scrollbar-hide">
-      <h1 className="text-xl font-bold">Product List</h1>
+      <h1 className="text-4xl mt-20 ml-4">Product List</h1>
 
       {/* Categories Filter */}
-      <div className="flex gap-5 overflow-x-auto mt-4 h-10 scrollbar-hide">
+      <div className="flex gap-5 overflow-x-auto mt-4 ml-4 h-10 scrollbar-hide">
         <button
           onClick={() => setSelectedCategory("all")}
           className={`px-4 py-2 rounded-xl bg-transparent ${
@@ -63,9 +63,9 @@ export default function Products() {
               {/* Product Details */}
               <div className="mt-2 flex flex-col flex-grow">
                 <p className="text-yellow-400">⭐ {product.rating}</p>
-                <h2 className="text-lg font-bold truncate">{product.title}</h2>
+                <h2 className="text-lg truncate">{product.title}</h2>
                 <h2 className="text-lg text-sm truncate">{product.description}</h2>
-                <p className="text-white font-bold mt-auto">${product.price}</p>
+                <p className="text-white  mt-auto">${product.price}</p>
               </div>
             </div>
           </Link>

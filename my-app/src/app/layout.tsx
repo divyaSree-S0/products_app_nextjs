@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Lato } from "next/font/google"; // Import Lato font
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+
+
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"], // Specify available weights
+  variable: "--font-lato", // Custom CSS variable
+});
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${lato.variable} font-sans antialiased`}
       >
         {children}
         <ToastContainer /> {/* ✅ Add this to enable toast notifications */}
