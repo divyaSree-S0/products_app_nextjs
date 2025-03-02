@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Product = {
+export type Product = {
   id: number;
   title: string;
   rating: number;
@@ -21,16 +21,52 @@ type ProductState = {
   fetchProducts: () => Promise<void>;
   fetchCategories: () => Promise<void>;
 };
- type StoreState = {
-   cart: CartItem[];
-   addToCart: (product: CartItem) => void;
- };
 
- export const useStore = create<StoreState>((set) => ({
-   cart: [],
-   addToCart: (product) =>
-     set((state) => ({ cart: [...state.cart, product] })),
- }));
+type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+};
+
+type StoreState = {
+  cart: CartItem[];
+  addToCart: (product: CartItem) => void;
+  updateQuantity: (id: number, quantity: number) => void; // ✅ Add this function
+  removeFromCart: (id: number) => void;
+};
+
+export const useStore = create<StoreState>((set) => ({
+  cart: [],
+  addToCart: (product) =>
+    set((state) => {
+      const existingItem = state.cart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return {
+          cart: state.cart.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        };
+      }
+      return { cart: [...state.cart, { ...product, quantity: 1 }] };
+    }),
+
+  updateQuantity: (id, quantity) =>
+    set((state) => ({
+      cart: state.cart.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+      ),
+    })),
+
+  removeFromCart: (id) =>
+    set((state) => ({
+      cart: state.cart.filter((item) => item.id !== id),
+    })),
+}));
+
 
 export const useProductStore = create<ProductState>((set) => ({
   products: [],

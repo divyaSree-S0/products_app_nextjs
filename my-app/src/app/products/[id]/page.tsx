@@ -1,6 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useStore, useProductStore } from "@/store/useStore";
+import type { Product } from "@/store/useStore";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,13 +12,13 @@ export default function ProductDetail() {
   const router = useRouter();
   const { products } = useProductStore();
   const { cart, addToCart, updateQuantity, removeFromCart } = useStore();
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState<Product | null>(null);
 
   // Find the product
   useEffect(() => {
     if (params?.id) {
       const foundProduct = products.find((p) => p.id === Number(params.id));
-      setProduct(foundProduct);
+      setProduct(foundProduct ?? null);
     }
   }, [params?.id, products]);
 
